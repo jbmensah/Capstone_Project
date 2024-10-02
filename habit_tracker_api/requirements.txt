@@ -1,0 +1,14 @@
+Django==4.2.7
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.2.2
+mysqlclient==2.2.0
+gunicorn==21.2.0
+dj-database-url==1.2.0
+python-decouple==3.8
+whitenoise==6.5.0
+Pillow==10.0.1
+django-cors-headers==3.14.0
+pytest-django==4.5.2
+autopep8==2.0.4
+black==23.9.1
+pyjwt==2.8.0
