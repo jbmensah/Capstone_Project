@@ -1,11 +1,11 @@
+from asyncio import exceptions
 import dataclasses
 import datetime
 import jwt
 from typing import TYPE_CHECKING
 from django.conf import settings
 
-
-from . models import User
+from . import models
 
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class UserDataClass:
 		)
 	
 def create_user(user_dc: "UserDataClass") -> "UserDataClass":
-	instance = User(
+	instance = models.User(
 		first_name = user_dc.first_name,
 		last_name = user_dc.last_name,
 		email = user_dc.email		
@@ -41,16 +41,26 @@ def create_user(user_dc: "UserDataClass") -> "UserDataClass":
 	return UserDataClass.from_instance(instance)
 
 def user_email_selector(email: str) -> "UserDataClass":
-	user = User.objects.filter(email=email).first()
-	 
+	user = models.User.objects.filter(email=email).first()
+	if user is None:
+		raise Exception("User not found")
 	return user
 
-def create_toke(user_id: int) -> str:
+def create_token(user_id: int) -> str:
 	payload = dict(
 		id = user_id,
-		exp = datetime.datetime.utcnow() + datetime.timedelta(hours=24),
-		iat = datetime.datetime.utcnow()
+		exp = datetime.datetime.now() + datetime.timedelta(hours=24),
+		iat = datetime.datetime.now()
 	)
 	token = jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
 
 	return token
+
+def verify_token(token: str) -> dict:
+	try:
+		payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+		return payload
+	except jwt.ExpiredSignatureError:
+		raise exceptions.AuthenticationFailed("Token has expired.")
+	except jwt.DecodeError:
+		raise exceptions.AuthenticationFailed("Token is invalid.")

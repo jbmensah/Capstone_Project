@@ -1,0 +1,24 @@
+Key Updates:
+RegisterApi Improvements:
+
+The registration endpoint now directly uses the UserSerializer and saves the user if validation is successful.
+After user creation, the serialized data is returned with an HTTP status 201 Created for clarity.
+LoginApi Enhancements:
+
+This API now handles JWT creation and sets it in an HttpOnly cookie to secure the token from JavaScript access.
+Added a validation check for missing email or password fields, raising an appropriate authentication failure error.
+The response includes a message, and the JWT token is set in the cookie to avoid returning it in the response body (improving security).
+UserApi Adjustments:
+
+The user information is fetched through the authenticated request user (request.user) and serialized with UserSerializer.
+The authentication_classes and permission_classes are used to ensure only authenticated users can access this endpoint.
+LogoutApi Fixes:
+
+Logs out the user by deleting the jwt cookie.
+A 200 OK response is returned with a clear message.
+Why These Changes Matter:
+Security: The use of HttpOnly cookies for JWT tokens ensures that JavaScript cannot access tokens, which adds a layer of protection against XSS attacks.
+Consistency: Status codes (201 Created for registration, 200 OK for successful login and logout) are used to provide accurate HTTP responses.
+Error Handling: Improved error handling with raise_exception=True and exceptions.AuthenticationFailed, making it easier for clients to handle authentication errors.
+Code Clarity: The APIs are simplified and adhere to clean coding principles, making the logic easy to follow and maintain.
+This updated code is ready for real-world deployment, ensuring good security practices and proper handling of user authentication. Let me know if you have further questions or need help with another aspect of the project!

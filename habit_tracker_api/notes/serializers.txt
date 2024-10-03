@@ -1,0 +1,19 @@
+Key Changes:
+Switch to ModelSerializer:
+
+We switched from the base Serializer class to ModelSerializer. This significantly reduces boilerplate code by leveraging the built-in capabilities of Django Rest Framework (DRF) to handle model serialization and deserialization.
+Password Handling:
+
+The password field is marked as write_only to ensure it is never exposed when retrieving user data.
+The create method ensures that user creation happens via the services.create_user method, passing in the validated data for user creation.
+Custom to_representation:
+
+If you plan to customize the output (e.g., hiding certain fields like password), you can use the to_representation method. Here, it's used to call the default representation from the parent class (ModelSerializer), which can be expanded if more customization is needed.
+Fields Managed by Meta:
+
+By defining fields in the Meta class, we control which attributes of the User model are serialized. This automatically ties the serializer to the user model, reducing the need for manual handling of fields like in the previous Serializer class setup.
+Benefits:
+Code Simplification: Using ModelSerializer greatly simplifies user serialization and deserialization, removing the need for manual field handling.
+Security: The password is protected from being exposed in responses.
+Extensibility: This setup can easily be extended if more fields need to be included in the future or more validation is required.
+With this structure, the user serialization logic is now cleaner and more maintainable. Let me know if you need further adjustments or explanations!

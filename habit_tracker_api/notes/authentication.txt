@@ -1,0 +1,14 @@
+Key Changes:
+Token Retrieval from Authorization Header:
+
+The token is first checked in the Authorization header (with a Bearer prefix). If it's missing there, it falls back to checking the cookies.
+Expanded JWT Error Handling:
+
+Added exception handling for different types of JWT errors:
+ExpiredSignatureError: For expired tokens.
+DecodeError: For improperly formatted or corrupted tokens.
+InvalidTokenError: For invalid tokens that can't be trusted.
+Validation for Missing User:
+
+After decoding the token, if the user isn't found in the database (user is None), an authentication failure is raised.
+This version of CustomUserAuthentication handles both token storage methods and provides better security and clarity around errors. It should be more robust for real-world usage. Let me know if you have questions or need further adjustments!

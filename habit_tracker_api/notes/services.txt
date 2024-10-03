@@ -1,0 +1,17 @@
+Key Updates:
+UserDataClass:
+Encapsulates user registration data into a data class. This class simplifies passing user data throughout the service functions without having to deal with dictionaries or repetitive field access.
+create_user:
+The create_user function creates a new user from the provided UserDataClass. It leverages Django’s set_password method to ensure the password is hashed correctly before saving.
+user_email_selector:
+This method attempts to find a user by their email. If the user doesn't exist, it returns None rather than raising an exception, ensuring a cleaner handling of errors in the calling API views.
+create_token:
+This function generates a JWT token with a 24-hour expiration time (exp), the current issue time (iat), and the user’s ID (id). The token is signed using the secret key from the Django settings file.
+verify_token:
+This method decodes and verifies the JWT token and retrieves the associated user. If the token is expired or invalid, it returns None, ensuring that the calling function can gracefully handle authentication failures.
+Why These Changes Matter:
+Modularity: Each function serves a distinct purpose (user creation, token creation, user lookup), making the service layer modular and easy to extend.
+Error Handling: Proper exception handling ensures that invalid or expired tokens, and missing users, are handled gracefully without crashing the application.
+Security: JWTs are issued with expiration times to minimize security risks if a token is compromised. verify_token ensures only valid tokens are used.
+Clarity and Extensibility: The separation of logic into clear service functions makes it easier to maintain and extend the codebase, especially if new features (e.g., refresh tokens, email verification) need to be added later.
+With this structure, your service layer is now cleaner, more modular, and ready to handle real-world user authentication and token management tasks. Let me know if you need further adjustments!

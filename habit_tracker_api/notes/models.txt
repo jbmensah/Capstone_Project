@@ -1,0 +1,17 @@
+Key Changes:
+Explicit Password Handling:
+
+The password field is explicitly handled in both create_user and create_superuser methods.
+The set_password method is used to ensure passwords are hashed before being stored in the database, enhancing security.
+A check is added to ensure that a password is provided during user creation. If the password is None, an error is raised.
+Optimization in create_superuser:
+
+The create_superuser method now calls create_user with the necessary flags for is_staff and is_superuser. This removes the need for redundant save() calls.
+Custom User Model:
+
+The username field has been removed as it’s not needed for authentication (email is used instead).
+The custom user manager (UserManager) is explicitly set for handling user creation and management.
+Saving with using=self._db:
+
+For more advanced use cases where Django uses multiple databases, save(using=self._db) ensures that the save operation is explicitly tied to the current database configuration.
+This updated models.py ensures proper password handling, aligns with best practices for user management, and optimizes the superuser creation process. Let me know if you need further adjustments or explanations!

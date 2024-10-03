@@ -1,11 +1,10 @@
 from rest_framework import views, response, exceptions, permissions
 
-from . import serializer as user_serializer
+from . import serializers as user_serializer
 from . import services, authentication
 
 class RegisterApi(views.APIView):
-	pass
-
+	
 	def post(self, request):
 		serializer = user_serializer.UserSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
@@ -23,20 +22,24 @@ class LoginApi(views.APIView):
 		email = request.data["email"]
 		password = request.data["password"]
 
-		user = services.user_email_selector(email=email)
-
-		if user is None:
-			raise exceptions.AuthenticationFailed("Invalid Credentials") # for security reasons
+		if not email or not password:
+			raise exceptions.AuthenticationFailed("Missing credentials")
+		try:
+			user = services.user_email_selector(email=email)
+		except ValueError as e:
+			raise exceptions.AuthenticationFailed(str(e))
 
 		if not user.check_password(raw_password=password):
 			raise exceptions.AuthenticationFailed("Invalid Credentials") # for security reasons
 
-		token = services.create_toke(user_id=user.id)
+		try:
+			token = services.create_token(user_id=user.id)
+		except Exception as e:
+			raise exceptions.AuthenticationFailed(f"Token creation failed: {str(e)}")
 
 		resp = response.Response()
-
 		resp.set_cookie(key="jwt", value=token, httponly=True)
-
+		resp.data = {"message": "Login successful", "token": token}
 		return resp
 
 
@@ -44,7 +47,7 @@ class UserApi(views.APIView):
 	"""
 	The endpoint can only be used if the user is authenticated
 	"""
-	authentication_classes = (authentication.CustomrUserAuthentication,)
+	authentication_classes = (authentication.CustomUserAuthentication,)
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request):		
@@ -55,12 +58,12 @@ class UserApi(views.APIView):
 
 
 class LogoutApi(views.APIView):
-	authentication_classes = (authentication.CustomrUserAuthentication,)
+	authentication_classes = (authentication.CustomUserAuthentication,)
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def post(self, request):
 		resp = response.Response()
 		resp.delete_cookie("jwt")
-		resp.data = {"message": "Goodbye!!"}
+		resp.data = {"message": "Goodbye!"}
 
 		return resp
