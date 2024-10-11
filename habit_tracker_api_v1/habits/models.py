@@ -24,6 +24,9 @@ class Habit(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)  # Automatically update whenever the record is saved
 	author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="habits")
 
+	# class Meta:
+	# 	ordering = ['-created_at']
+
 	def __str__(self):
 		return self.name
 
