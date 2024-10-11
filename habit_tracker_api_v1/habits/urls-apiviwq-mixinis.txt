@@ -1,0 +1,8 @@
+from . import views
+from django.urls import path
+
+urlpatterns = [
+	path("homepage/", views.homepage, name="habits_home"),
+	path("", views.HabitListCreateView.as_view(), name="list_habits"),
+	path("<int:pk>/", views.HabitRetrieveUpdateDestroyView.as_view(), name="habit_detail"),
+]

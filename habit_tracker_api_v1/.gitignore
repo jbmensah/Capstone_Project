@@ -1,0 +1,33 @@
+# Python specific
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+# Django specific
+/static/
+/media/
+/db.sqlite3
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv/
+env.bak/
+env/
+
+# VSCode specific (if using VSCode)
+.vscode/
+
+# PyCharm specific
+.idea/
+
+# MacOS specific
+.DS_Store
+
+# Django migrations
+*/migrations/*
+
+# Environment variables
+.env

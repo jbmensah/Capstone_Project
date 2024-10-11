@@ -1,0 +1,100 @@
+{
+		"user": 1,
+		"name": "Exercise",
+		"description": "Morning workout routine",
+		"start_date": "2024-10-10",
+		"frequency": "daily",
+		"reminder_time": "06:00:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Read a Book",
+		"description": "Read 20 pages of a book",
+		"start_date": "2024-10-15",
+		"frequency": "daily",
+		"reminder_time": "20:00:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Meditation",
+		"description": "10 minutes of morning meditation",
+		"start_date": "2024-10-12",
+		"frequency": "daily",
+		"reminder_time": "07:30:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Weekly Review",
+		"description": "Review progress and set goals for the upcoming week",
+		"start_date": "2024-10-13",
+		"frequency": "weekly",
+		"reminder_time": "18:00:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Water Plants",
+		"description": "Water all houseplants",
+		"start_date": "2024-10-14",
+		"frequency": "weekly",
+		"reminder_time": "09:00:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Clean the House",
+		"description": "Deep clean every Saturday",
+		"start_date": "2024-10-12",
+		"frequency": "weekly",
+		"reminder_time": "08:00:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Pay Rent",
+		"description": "Monthly rent payment",
+		"start_date": "2024-10-01",
+		"frequency": "monthly",
+		"reminder_time": "12:00:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Grocery Shopping",
+		"description": "Buy groceries for the week",
+		"start_date": "2024-10-09",
+		"frequency": "weekly",
+		"reminder_time": "10:00:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Call Parents",
+		"description": "Weekly call with parents",
+		"start_date": "2024-10-07",
+		"frequency": "weekly",
+		"reminder_time": "19:00:00",
+		"streak": 0,
+		"is_active": true
+	},
+	{
+		"user": 1,
+		"name": "Monthly Budget Review",
+		"description": "Review budget for the month",
+		"start_date": "2024-10-25",
+		"frequency": "monthly",
+		"reminder_time": "16:00:00",
+		"streak": 0,
+		"is_active": true
+	}
