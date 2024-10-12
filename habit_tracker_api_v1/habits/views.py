@@ -10,24 +10,45 @@ from django.shortcuts import get_object_or_404
 from accounts.serializers import CurrentUserHabitsSerializer
 
 
-# Create your views here.
-@api_view(http_method_names=["GET", "POST"])
-def homepage(request:Request):
-	permission_classes = []
+@api_view(http_method_names=["GET"])
+@permission_classes([IsAuthenticated])
+def homepage(request: Request):
+	user = request.user
 
-	if request.method == "POST":
-		data = request.data
+	# Example stats for authenticated user
+	user_habits = Habit.objects.filter(user=user)
+	total_habits = user_habits.count()
+	active_habits = user_habits.filter(is_active=True).count()
+	current_streaks = sum(habit.streak for habit in user_habits)
 
-		response = {"message": "Hello, World!", "data":data}
-		return Response(data=response, status=status.HTTP_201_CREATED)
-
-	response = {"message": "Hello, World!"}
+	response = {
+		"message": f"Welcome back, {user.username}!",
+		"description": "Here's a summary of your progress:",
+		"data": {
+			"total_habits": total_habits,
+			"active_habits": active_habits,
+			"current_streaks": current_streaks,
+			"recent_habits": [
+				{
+					"name": habit.name,
+					"streak": habit.streak,
+					"last_updated": habit.updated_at
+				} for habit in user_habits.order_by('-updated_at')[:3]
+			]
+		},
+		"endpoints": {
+			"create_habit": "/api/habits/create/",
+			"list_habits": "/api/habits/",
+			"retrieve_update_delete_habit": "/api/habits/<id>/",
+			"view_user_habits": "/api/user/habits/"
+		}
+	}
 	return Response(data=response, status=status.HTTP_200_OK)
 
 
 class HabitListCreateView(generics.GenericAPIView,
-						  mixins.ListModelMixin,
-						  mixins.CreateModelMixin
+						mixins.ListModelMixin,
+						mixins.CreateModelMixin
 ):
 	"""
 	A view for creating and listing Habits
@@ -38,22 +59,32 @@ class HabitListCreateView(generics.GenericAPIView,
 	pagination_class = PageNumberPagination
 
 	def perform_create(self, serializer):
+		"""
+		When a new habit is created, ensure it is linked to the logged-in user.
+		"""
 		user = self.request.user
-		serializer.save(author=user)
+		serializer.save(user=user)
 		return super().perform_create(serializer)
-
+	
+	def get_queryset(self):
+		"""
+		Ensure the queryset is filtered by the logged-in user.
+		"""
+		return Habit.objects.filter(user=self.request.user).order_by('-created_at')
+	
 	def get(self, request:Request, *args, **kwargs):
 		return self.list(request, *args, **kwargs)
 	
 	def post(self, request:Request, *args, **kwargs):
 		return self.create(request, *args, **kwargs)
 	
+	
 
 
 class HabitRetrieveUpdateDestroyView(generics.GenericAPIView,
-									 mixins.RetrieveModelMixin,
-									 mixins.UpdateModelMixin,
-									 mixins.DestroyModelMixin
+									mixins.RetrieveModelMixin,
+									mixins.UpdateModelMixin,
+									mixins.DestroyModelMixin
 ):
 	"""
 	A view for retrieving, updating, and deleting Habits
@@ -61,6 +92,13 @@ class HabitRetrieveUpdateDestroyView(generics.GenericAPIView,
 	serializer_class = HabitSerializer
 	queryset = Habit.objects.all()
 	permission_classes = [IsAuthenticated]
+
+	def get_object(self):
+		"""
+		Ensure that only habits belonging to the logged-in user can be accessed.
+		"""
+		habit = get_object_or_404(Habit, pk=self.kwargs['pk'], user=self.request.user)
+		return habit
 
 	def get(self, request:Request, *args, **kwargs):
 		return self.retrieve(request, *args, **kwargs)
@@ -74,8 +112,11 @@ class HabitRetrieveUpdateDestroyView(generics.GenericAPIView,
 @api_view(http_method_names=["GET"])
 @permission_classes([IsAuthenticated])
 def get_habits_for_current_user(request:Request):
+	"""
+    A view to retrieve all habits for the logged-in user.
+    """
 	user = request.user
-
+	habits = Habit.objects.filter(user=user).order_by('-created_at')
 	serializer = CurrentUserHabitsSerializer(
 		instance=user,
 		context={'request':request})
@@ -99,9 +140,9 @@ class ListHabitsForAuthor(
 		queryset = Habit.objects.all()
 
 		if username is not None:
-			return Habit.objects.filter(author__username=username)
-		# return Habit.objects.filter(author=user) logged in user
-		# return Habit.objects.filter(author__username=username) ===
+			return Habit.objects.filter(user__username=username)
+		# return Habit.objects.filter(user=user) logged in user
+		# return Habit.objects.filter(user__username=username) ===
 		return queryset
 
 	def get(self, request:Request, *args, **kwargs):

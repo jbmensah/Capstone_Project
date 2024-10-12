@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
 	"rest_framework_simplejwt",
+	'drf_yasg',
 ]
 
 AUTH_USER_MODEL = "accounts.CustomUser"
@@ -55,16 +56,24 @@ ROOT_URLCONF = "habit_tracker_api_v1.urls"
 
 REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "error",
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.TokenAuthentication",		      
+    "DEFAULT_AUTHENTICATION_CLASSES": (    
+        "rest_framework_simplejwt.authentication.JWTAuthentication",     
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 3,
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+}
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {      
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }
 
 SIMPLE_JWT = {

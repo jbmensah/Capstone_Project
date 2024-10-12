@@ -6,23 +6,23 @@ User = get_user_model()  # Assuming the User model will be created later
 class Habit(models.Model):
 	FREQUENCY_CHOICES = [
 		('daily', 'Daily'),
-		('weekly', 'Weekly'),
-		('monthly', 'Monthly'),
+		('weekly', 'Weekly'),		
 	]
 
-	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # Will remove null=True, blank=True later
+
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="habits") # Check if related_name is ok
 	name = models.CharField(max_length=255)
 	description = models.TextField(default="",blank=True)
 	start_date = models.DateField()
+	end_date = models.DateField(null=True, blank=True)
 	frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES)
-	
+	# target_days = models.CharField(max_length=255, blank=True, choices=DAYS_OF_WEEK)
 	# New fields for MVP
-	reminder_time = models.TimeField(null=True, blank=True)  # Optional field
+	# reminder_time = models.TimeField(null=True, blank=True)  # Optional field
 	streak = models.IntegerField(default=0)  # Track streak of habit completion
 	is_active = models.BooleanField(default=True)  # Soft delete logic
 	created_at = models.DateTimeField(auto_now_add=True)  # Automatically set at creation
-	updated_at = models.DateTimeField(auto_now=True)  # Automatically update whenever the record is saved
-	author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="habits")
+	updated_at = models.DateTimeField(auto_now=True)  # Automatically update whenever the record is saved	
 
 	# class Meta:
 	# 	ordering = ['-created_at']

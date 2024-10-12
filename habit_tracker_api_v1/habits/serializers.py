@@ -11,14 +11,15 @@ class HabitSerializer(serializers.ModelSerializer):
 			'name',
 			'description',
 			'start_date',       # Validate this field. Should not be less that the current date
+			'end_date',
 			'frequency',
-			'reminder_time',
+			# 'reminder_time',
 			'streak',
 			'is_active',
 			'created_at',      # Automatically managed fields
 			'updated_at',
 		]
-		read_only_fields = ('created_at', 'updated_at')  # Make these fields read-only
+		read_only_fields = ('id', 'user', 'streak','created_at', 'updated_at')  # Make these fields read-only
 
 	def validate_start_date(self, value):
 		"""Custom validation for start_date to check it's not in the past."""
@@ -37,7 +38,6 @@ class HabitSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		"""Custom create method to handle additional logic."""
 		# Validate start_date (should not be in the past)
-	
 		return super().create(validated_data)
 
 	def update(self, instance, validated_data):
