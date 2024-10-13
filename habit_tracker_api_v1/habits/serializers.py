@@ -1,6 +1,6 @@
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Habit
+from .models import Habit, HabitLog
 
 class HabitSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -44,3 +44,9 @@ class HabitSerializer(serializers.ModelSerializer):
 		"""Custom update method to handle additional logic."""
 		# Optionally handle any additional logic here before updating
 		return super().update(instance, validated_data)
+
+class HabitLogSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = HabitLog
+		fields = ['id', 'habit', 'log_date', 'status', 'note', 'created_at', 'updated_at']
+		read_only_fields = ['id', 'created_at', 'updated_at']

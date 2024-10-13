@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -49,3 +50,32 @@ class Habit(models.Model):
 		"""Reactivate a soft-deleted habit."""
 		self.is_active = True
 		self.save()
+
+	def log_habit(self, status, note=None):
+		"""Log the habit completion or miss."""
+		HabitLog.objects.create(
+			habit=self,
+			log_date=timezone.now().date(),
+			status=status,
+			note=note
+		)
+
+		if status == 'completed':
+			self.increment_streak()
+		else:
+			self.reset_streak()
+	
+
+class HabitLog(models.Model):
+	habit = models.ForeignKey(Habit, on_delete=models.CASCADE, related_name='logs')
+	log_date = models.DateField(default=timezone.now)  # Date the habit was logged
+	status = models.CharField(max_length=20, choices=[('completed', 'Completed'), ('missed', 'Missed')])
+	note = models.TextField(blank=True, null=True)  # Optional note for the log entry
+	created_at = models.DateTimeField(auto_now_add=True)  # Log creation timestamp
+	updated_at = models.DateTimeField(auto_now=True)  # Log update timestamp
+
+	class Meta:
+		ordering = ['-log_date']
+
+	def __str__(self):
+		return f"{self.habit.name} - {self.log_date} ({self.status})"

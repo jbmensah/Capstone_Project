@@ -7,12 +7,9 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
 openapi.Info(
-	title="Snippets API",
+	title="Habit Tracker API",
 	default_version='v1',
-	description="Test description",
-	terms_of_service="https://www.google.com/policies/terms/",
-	contact=openapi.Contact(email="contact@snippets.local"),
-	license=openapi.License(name="BSD License"),
+	description="The Habit Tracker API allows users to create, manage, and track their habits. 	It provides features for habit logging, progress tracking, and streak management. This API supports operations such as creating habits, updating habit information, retrieving habit details, and deleting habits. It also includes user authentication and permission management, ensuring secure access to habit data. Additionally, users can view insights into their habit performance, including streaks, completion rates, and habit logs.",
 ),
 public=True,
 permission_classes=(permissions.AllowAny,),
