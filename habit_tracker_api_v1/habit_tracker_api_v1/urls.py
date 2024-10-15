@@ -9,7 +9,7 @@ schema_view = get_schema_view(
 openapi.Info(
 	title="Habit Tracker API",
 	default_version='v1',
-	description="The Habit Tracker API allows users to create, manage, and track their habits. 	It provides features for habit logging, progress tracking, and streak management. This API supports operations such as creating habits, updating habit information, retrieving habit details, and deleting habits. It also includes user authentication and permission management, ensuring secure access to habit data. Additionally, users can view insights into their habit performance, including streaks, completion rates, and habit logs.",
+	description="The Habit Tracker API allows users to create, manage, and track their habits. 	It provides features for habit logging, progress tracking, and streak management.",
 ),
 public=True,
 permission_classes=(permissions.AllowAny,),

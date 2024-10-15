@@ -1,5 +1,6 @@
 
 import os
+from decouple import config
 from dotenv import load_dotenv
 from pathlib import Path
 from datetime import timedelta
@@ -14,12 +15,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-uxk^a(*irzt!p1squabv)*&qj8_^4-(tld)b83giaw*#nfw6!g"
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
+# Development settings
+DEBUG = config('DEBUG', cast=bool)
 ALLOWED_HOSTS = []
+
+# Production settings
+# DEBUG = False
+
+# ALLOWED_HOSTS = ['habit-tracker-api.herokuapp.com',]
+
 
 
 # Application definition
@@ -31,8 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-	"habits",
-    "accounts",
+	"habits.apps.HabitsConfig",
+    "accounts.apps.AccountsConfig",
+	
     # third party apps
     "rest_framework",
     "rest_framework.authtoken",
@@ -105,14 +114,20 @@ WSGI_APPLICATION = "habit_tracker_api_v1.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('NAME'),
+#         'USER': config('USER'),
+#         'PASSWORD': config('PASSWORD'),
+#         'HOST': config('HOST'),
+#         'PORT': config('PORT'),
+#     }
+# }
 DATABASES = {
-    "default": {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

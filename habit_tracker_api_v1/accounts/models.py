@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.utils.crypto import get_random_string
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -27,7 +28,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
 	email = models.EmailField(max_length=80, unique=True)
-	username = models.CharField(max_length=150, unique=True, default="default_username")
+	username = models.CharField(max_length=150, unique=True, blank=True, null=True)
 	USERNAME_FIELD = "email"
 	REQUIRED_FIELDS = []
 
@@ -36,3 +37,8 @@ class CustomUser(AbstractUser):
 
 	def __str__(self):
 		return self.email
+	
+	def save(self, *args, **kwargs):
+		if not self.username:  # Assign random username if not provided
+			self.username = get_random_string(8)  # You can use more complex logic for generating usernames
+		super().save(*args, **kwargs)

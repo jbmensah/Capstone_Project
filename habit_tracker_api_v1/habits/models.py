@@ -1,3 +1,4 @@
+# from django.utils.timezone import now
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -52,21 +53,35 @@ class Habit(models.Model):
 		self.save()
 
 	def log_habit(self, status, note=None):
-		"""Log the habit completion or miss."""
-		HabitLog.objects.create(
+		"""Log the habit completion or miss. Prevent multiple logs for the same day."""
+		log_entry, created = HabitLog.objects.get_or_create(
 			habit=self,
-			log_date=timezone.now().date(),
-			status=status,
-			note=note
+			log_date= timezone.now().date(),
+			defaults={'status': status, 'note': note}
 		)
+		
+		if not created:
+			# Optionally, update the log entry if needed
+			log_entry.status = status
+			log_entry.note = note
+			log_entry.save()
 
 		if status == 'completed':
 			self.increment_streak()
 		else:
 			self.reset_streak()
+
 	
 
 class HabitLog(models.Model):
+	STATUS_COMPLETED = 'completed'
+	STATUS_MISSED = 'missed'
+	
+	STATUS_CHOICES = [
+		(STATUS_COMPLETED, 'Completed'),
+		(STATUS_MISSED, 'Missed'),
+	]	
+	
 	habit = models.ForeignKey(Habit, on_delete=models.CASCADE, related_name='logs')
 	log_date = models.DateField(default=timezone.now)  # Date the habit was logged
 	status = models.CharField(max_length=20, choices=[('completed', 'Completed'), ('missed', 'Missed')])
@@ -76,6 +91,7 @@ class HabitLog(models.Model):
 
 	class Meta:
 		ordering = ['-log_date']
+		unique_together = ('habit', 'log_date') 
 
 	def __str__(self):
 		return f"{self.habit.name} - {self.log_date} ({self.status})"

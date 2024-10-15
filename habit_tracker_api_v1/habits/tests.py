@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from django.contrib.auth import get_user_model 
 
-
+User = get_user_model()
 
 class HelloWorldTestCase(APITestCase):
 
@@ -20,7 +20,7 @@ class HelloWorldTestCase(APITestCase):
 		response = self.client.get(reverse("habits_home"))
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertEqual(response.data["message"], "Hello, World!")
+		self.assertEqual(response.data["message"], "Welcome back, {user.username}!")
 
 class HabitListCreateTestCase(APITestCase):
 
@@ -50,7 +50,7 @@ class HabitListCreateTestCase(APITestCase):
 						"start_date": "2024-10-11"}
 		response = self.client.post(self.url, sample_habit, format="json")
 		
-		# print(response.data)
+		print(response.data)
 
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 		self.assertEqual(response.data["name"], "Test Habit")
