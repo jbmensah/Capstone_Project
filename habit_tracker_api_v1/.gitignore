@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *.sqlite3
 *.log
+mysql_dump.sql
 
 # Django specific
 /static/
